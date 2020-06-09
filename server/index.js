@@ -12,5 +12,3 @@ chat.listen(chatRouter.port, () => {
 spotify.listen(spotifyRouter.port, () => {
     console.log(`listening on ${spotifyRouter.port}`)
 })
-
-console.log('hi')
