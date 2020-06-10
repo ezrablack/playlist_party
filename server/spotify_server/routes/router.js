@@ -3,7 +3,7 @@ const passport = require('passport')
 
 /* GET homepage */
 spotifyRouter.get('/', (req, res) => {
-    res.send('spotify is up and running')
+    res.send(req.user)
 })
 
 //auth with spotify
@@ -15,13 +15,7 @@ spotifyRouter.get('/spotify', passport.authenticate('spotify', {
 //callback route for Spotify to redirect to
 spotifyRouter.get('/callback', passport.authenticate('spotify', { failureRedirect: '/login'}),
     (req, res) => {
-        res.send('is this working?')
-        // res.redirect('http://localhost:3000/playground')
-})
-
-//callback url
-spotifyRouter.get('/playground', passport.authenticate('spotify'), (req, res) => {
-   
+        res.redirect('http://localhost:3000/playground')
 })
 
 //auth login
