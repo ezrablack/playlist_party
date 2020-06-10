@@ -1,7 +1,7 @@
 const express = require('express');
 const chatRouter = express.Router();
 
-/* GET homepage */
+/* localhost:3000 */
 chatRouter.get('/', (req, res) => {
     res.send('server is up and running')
     

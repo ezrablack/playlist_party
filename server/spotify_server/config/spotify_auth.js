@@ -1,24 +1,46 @@
 const passport = require('passport');
 const SpotifyStrategy = require('passport-spotify').Strategy;
-
-//Spotify Credentials
-var client_id = 'a170a77258f2447b8ed267c5ef23d6ed'; // Your client id
-var client_secret = '94b9aded697d4542b23840396d9bb4a0 '; // Your secret
-var redirect_uri = 'http://localhost:3000/playground'; // Your redirect uri
-var scope = 'streaming user-read-private user-read-email user-modify-playback-state user-read-playback-state';
+const keys = require('./keys')
+const User = require('../../models/user-model')
 
 //use Passport to authenticate user
 passport.use(
     new SpotifyStrategy(
         {   
-            clientID: client_id,
-            clientSecret: client_secret,
-            callbackURL: redirect_uri
+            clientID: keys.spotify.client_id,
+            clientSecret: keys.spotify.client_secret,
+            callbackURL: keys.spotify.redirect_uri
         },
-        function( accessToken, refreshToken, expires_in, profile, done){
-            User.findOrCreate({ spotifyID: profile.id }, function(err, user){
-                return done(err,user);
-            });
+         ( accessToken, refreshToken, profile, done ) => {
+            //check if user exists
+            User.findOne({ spotifyId: profile.id }).then((currentUser)=>{
+                if(currentUser){
+                    console.log('user is:' + currentUser)
+                    done(null, currentUser);
+                }else{
+                    new User({
+                        username: profile.displayName,
+                        spotifyId: profile.id
+                    }).save().then((newUser) => {
+                        console.log('new user created:' + newUser)
+                        done(null, newUser);
+                    })
+                }
+            })
         }
     )
 )
+
+passport.serializeUser((user, done) => {
+    done(null, user.id);
+});
+
+passport.deserializeUser((id, done) => {
+    User.findById(id).then((user)=>{
+    done(null, user);
+    })
+});
+
+ 
+
+
