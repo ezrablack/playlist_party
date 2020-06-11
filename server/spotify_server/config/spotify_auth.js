@@ -19,7 +19,16 @@ passport.use(
                 if(currentUser){
                     currentUser.access = accessToken,
                     currentUser.refresh = refreshToken,
-                    User.findByIdAndUpdate({ spotifyId: profile.id }, {'$set': { currentUser }})
+                    User.findByIdAndUpdate(
+                        { spotifyId: profile.id }, 
+                        {'$set': currentUser },
+                        { new: true },
+                        currentUser.save(
+                        function (err ,user){
+                            if (err) return (err);
+                            currentUser = user
+                        })
+                    )
                     console.log(currentUser)
                     done(null, currentUser);
                 }else{
@@ -38,10 +47,12 @@ passport.use(
     )
 )
 
+//passport serialization
 passport.serializeUser((user, done) => {
     done(null, user.id);
 });
 
+//passport deserialization
 passport.deserializeUser((id, done) => {
     User.findById(id).then((user)=>{
     done(null, user);

@@ -1,0 +1,10 @@
+.body{
+    background-color: #1A1A1D;
+  }
+
+.logoutMessage{
+  display: flex;
+  text-align: center;
+  height: 100vh;
+  align-items: center;
+}
