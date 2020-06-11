@@ -29,7 +29,6 @@ passport.use(
                             currentUser = user
                         })
                     )
-                    console.log(currentUser)
                     done(null, currentUser);
                 }else{
                     new User({
@@ -38,7 +37,6 @@ passport.use(
                         access: accessToken,
                         refresh: refreshToken
                     }).save().then((newUser) => {
-                        console.log('new user created:' + newUser)
                         done(null, newUser);
                     })
                 }
