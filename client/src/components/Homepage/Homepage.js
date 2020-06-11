@@ -1,22 +1,19 @@
 import React from 'react'
-// import { useHistory } from 'react-router-dom'
+import { Button } from 'semantic-ui-react'
 import './Homepage.css'
 
 const Homepage = () => {
-    // const history = useHistory()
     
     function handleClick(){
-        // history.push('http://localhost:5010/login')
-        window.location.replace('http://localhost:5010/login')
-        // console.log('hi')
+        window.location.replace('http://localhost:5010/spotify')
     }
 
     return(
-        <div className='homeOuterContainer'>
-                <h1
-                onClick={handleClick}
-                >Join The Party</h1>
-        </div>
+        <body className='body'>
+            <div>
+                 <Button size='medium' inverted color='green' className="ui button medium" onClick={handleClick}>Join The Party</Button>
+            </div>
+        </body>
     )
 }
 
