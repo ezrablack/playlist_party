@@ -7,9 +7,9 @@ require('../spotify_server/config/spotify_auth')
 const passport = require('passport')
 const mongoose = require('mongoose')
 const keys = require('./config/keys')
+const app = express();
 const cookieSession = require('cookie-session')
 
-const app = express();
 
 //setup and encrypt session cookie
 app.use(cookieSession({
@@ -37,5 +37,6 @@ app.use('/playground', playgroundRouter)
 app.get('/', (req, res) => {
     res.send('hello world')
 })
+
 
 module.exports = app

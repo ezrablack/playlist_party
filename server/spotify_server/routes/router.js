@@ -8,7 +8,7 @@ spotifyRouter.get('/', (req, res) => {
 
 //auth with spotify
 spotifyRouter.get('/spotify', passport.authenticate('spotify', {
-    scope: ['user-read-email user-read-private'],
+    scope: ['user-read-email user-read-private user-read-playback-state user-modify-playback-state user-read-currently-playing streaming '],
     showDialog: true
 }))
 

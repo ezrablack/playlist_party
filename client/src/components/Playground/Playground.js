@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react'
-import { Button, Search, Segment } from 'semantic-ui-react'
+import { Button, Search} from 'semantic-ui-react'
+import { useHistory } from 'react-router-dom'
 import './Playground.css'
 
 const Spotify = require('spotify-web-api-js')
 const s = new Spotify()
 
-
 export default function Playground(){
     const [user, setUser] = useState('')
     const [search, setSearch] = useState('')
+    const history = useHistory()
     
     useEffect(()=>{
         fetch('http://localhost:5010/', { credentials: 'include'})
@@ -50,21 +51,29 @@ export default function Playground(){
         console.log(tracks) 
     }
 
+    function Logout(){
+        history.push('/logout')
+    }
 
     return(
         <body className='body'>
         <div>
-            <Segment inverted>
+                <nav>
+                    <Button onClick={Logout} inverted color='green' size='small' className="ui button "> Logout </Button>
+                    <Button inverted color='green' size ='small' className="ui button"> Join room</Button>
+                    <Button inverted color='green' size ='small' className="ui button"> Playlist History</Button>
+                </nav>
+            
                     <h1> Welcome, {user.username} </h1>
                 <div>
 
                     <h1 onClick={getArtist}>sample</h1>
                 </div>
+            
                 <div>
                     <Search onSearchChange={(e)=>(searchSongs(setSearch(e.target.value)))}></Search>
                     <Button inverted color='green' className="ui button" onClick={getDevices}>Find Devices</Button>
                 </div>
-            </Segment>
         </div>
         </body>
     )
