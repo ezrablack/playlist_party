@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Button, Search} from 'semantic-ui-react'
+// import { Button} from 'semantic-ui-react'
 import { useHistory } from 'react-router-dom'
 import './Playground.css'
 
@@ -8,7 +8,8 @@ const s = new Spotify()
 
 export default function Playground(){
     const [user, setUser] = useState('')
-    const [search, setSearch] = useState('')
+    const [results, setResults] = useState([])
+    const [devices, setDevices] = useState([])
     const history = useHistory()
     
     useEffect(()=>{
@@ -17,65 +18,86 @@ export default function Playground(){
         .then(data=>{setUser(data)})
     }, []) 
 
+    //find available devices
     function getDevices(){
-        console.log(user)
-        console.log(user.access)
         s.setAccessToken(`${user.access}`)
         s.getMyDevices().then(
             function(data){
-                console.log(data)
+                var d = data.devices
+                var devs = []
+                d.map(device=>devs.push(device))
+                setDevices(devs)
             }
         )
     }
 
-    function getArtist(){
+    //set chosen device
+    function setDevice(device){
+        var chosenDevice = []
+        chosenDevice.push(device)
+        chosenDevice.join("")
+        console.log(chosenDevice)
         s.setAccessToken(`${user.access}`)
-        s.getArtist('2hazSY4Ef3aB9ATXW7F5w3').then(
-            function (data) {
-              console.log('Artist information', data);
-            },
-            function (err) {
-              console.error(err);
-            }
-          );
+        s.transferMyPlayback(chosenDevice)
     }
 
+    //song search functionality
     var songQuery = null 
-    async function searchSongs(){
+    async function searchSongs(e){
+        console.log(e.target.value)
         s.setAccessToken(`${user.access}`)
-        if (songQuery !== null){
-            songQuery.abort()
+        if (e.target.value === ''){
+            setResults([])
         }
-        songQuery = await s.search(search, ["track"], {"limit":10} )
+        songQuery = await s.search(e.target.value, ["track", "artist"], {"limit":10} )
         var tracks = songQuery.tracks.items
-        console.log(tracks) 
+        var currentTrack = []
+        tracks.forEach(track =>{ 
+                // let uri = track.uri;
+                var title = track.name;
+                var artistName = track.artists[0].name
+                var song = `${artistName} - ${title}`
+                currentTrack.push(song)
+            })
+            setResults(currentTrack)
+            // selectedTrack(uri, track)
     }
 
+    //log user out
     function Logout(){
         history.push('/logout')
     }
-
     return(
         <body className='body'>
         <div>
-                <nav>
-                    <Button onClick={Logout} inverted color='green' size='small' className="ui button "> Logout </Button>
-                    <Button inverted color='green' size ='small' className="ui button"> Join room</Button>
-                    <Button inverted color='green' size ='small' className="ui button"> Playlist History</Button>
-                </nav>
-            
+                <div class='ui inverted menu'>
+                    <button onClick={Logout} size='small' className="ui inverted green button"> Logout </button>
+                    <button size ='small' className="ui inverted green button"> Join room</button>
+                    <button size ='small' className="ui inverted green button"> Playlist History</button>
+                </div>
                     <h1> Welcome, {user.username} </h1>
                 <div>
-
-                    <h1 onClick={getArtist}>sample</h1>
-                </div>
-            
-                <div>
-                    <Search onSearchChange={(e)=>(searchSongs(setSearch(e.target.value)))}></Search>
-                    <Button inverted color='green' className="ui button" onClick={getDevices}>Find Devices</Button>
+                    <div class="ui search">
+                        <input onChange={(e)=>{searchSongs(e)}} class="prompt" type="text" placeholder="Search for songs..."/>
+                    </div>  
+                    <div class="ui secondary vertical pointing menu">
+                        <ul>
+                            {results.map(result =>
+                                <li class='item'>{result}</li>
+                            )}                  
+                        </ul>
+                    </div>
+                    <button size='small' className="ui inverted green button" onClick={getDevices}>Find Devices</button>
+                    <div class="ui secondary vertical pointing menu">
+                        <ul>
+                            {devices.map(device =>
+                                <li class='item' onClick={()=>setDevice(device.id)}>{device.name}</li>
+                            )}                  
+                        </ul>
+                    </div>
                 </div>
         </div>
-        </body>
+    </body>
     )
 }
 
