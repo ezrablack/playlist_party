@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button } from 'semantic-ui-react'
+
 import './Homepage.css'
 
 const Homepage = () => {
@@ -9,9 +9,9 @@ const Homepage = () => {
     }
 
     return(
-        <body className='body'>
-            <div>
-                 <Button size='medium' inverted color='green' className="ui button medium" onClick={handleClick}>Join The Party</Button>
+        <body className='outerContainer'>
+            <div >
+                 <button className='loginButton' onClick={handleClick}>Join The Party</button>
             </div>
         </body>
     )
