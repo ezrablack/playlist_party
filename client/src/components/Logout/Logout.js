@@ -14,7 +14,7 @@ const Login = () => {
             <div className='homeOuterContainer'>
                 <Button inverted color='green' size ='small' className="ui button"
                 onClick={handleClick}
-                >Join The Party</Button>
+                >Hop Back In!</Button>
                 <div className='logoutMessage'>
                     <h1> Thanks For Coming To The Party! </h1>
                 </div>
