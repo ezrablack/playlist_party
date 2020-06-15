@@ -11,23 +11,20 @@ export default class Player extends Component {
       currentSongIndex: 0,
       theme: 'spotify'
     }
-    this.receiveStateUpdates = this.receiveStateUpdates.bind(this)
+    // this.receiveStateUpdates = this.receiveStateUpdates.bind(this)
   }
  
   
   
   
   render() {
-    this.props.queue.map(song=>{
-      console.log(song.track.href)
-      this.state.playlist.push(song.track.href)
-    })
+
     return (
       <React.Fragment>
         <div className="content">
           Wrap the content of your webpage in here
-          {/* {console.log(this.props.queue)} */}
-          {console.log(this.state.playlist)}
+          {console.log(this.props.queue)}
+          {/* {console.log(this.state.playlist)} */}
         </div>
         <ReactMediaVisualizer
           playlist={this.state.playlist}
@@ -44,13 +41,13 @@ export default class Player extends Component {
     if (payload.theme) {
       switch (payload.theme) {
         case 'spotify':
-          root.style.setProperty('--content-height', '82px')
+          document.documentElement.style.setProperty('--content-height', '82px')
           break
         case 'youtube':
-          root.style.setProperty('--content-height', '72px')
+          document.documentElement.style.setProperty('--content-height', '72px')
           break
         case 'soundcloud':
-          root.style.setProperty('--content-height', '48px')
+          document.documentElement.style.setProperty('--content-height', '48px')
           break
         default:
           break

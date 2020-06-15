@@ -13,7 +13,8 @@ export default function Playground(){
     const [devices, setDevices] = useState([])
     const [playlistOptions , setOptions] = useState([])
     const [playlist, setPlaylist] = useState(JSON.parse(localStorage.getItem('my-playlist')) || null)
-    const [queue, setQueue] = useState([])
+    const [queue, setQueue] = useState(JSON.parse(localStorage.getItem('queue')) || [])
+    const [random, setRandom ] = useState(0)
     // const [currentSong, setSong] = useState([])
     // const [currentPlayback, setPlayback] = useState('')
     const history = useHistory()
@@ -33,7 +34,7 @@ export default function Playground(){
             .then(res=>res.json())
             .then(data=>{setOptions(data)})
     }, [playlistOptions.length])
-    
+
     //user creates collab playlist and sends link to friends. this prevents need for DB and can set playback
     function createPlaylist(e){
         e.preventDefault()
@@ -62,10 +63,53 @@ export default function Playground(){
         localStorage.setItem('my-playlist', JSON.stringify(playlist))
         var chosenPlaylist = JSON.parse(localStorage.getItem('my-playlist')) 
         setPlaylist(chosenPlaylist)
-        getQueue(chosenPlaylist)
-        // window.location.reload()    
+        getQueue(chosenPlaylist)   
     }
     
+    //get queue from selected Spotify track
+    function getQueue(playlist){
+        if(playlist === null){
+            console.log('no songs added yet')
+        }else{
+        var currentPlaylist = playlist.playlist.playlistId
+        s.setAccessToken(`${user.access}`)
+        s.getPlaylistTracks(currentPlaylist)
+        .then(data=>{liveQueue(data.items)})
+        }
+    }
+
+    //sets current songs to local storage for rendering
+    function liveQueue(tracks){
+        localStorage.setItem('queue', JSON.stringify(tracks))
+        var newQueue = JSON.parse(localStorage.getItem('queue')) 
+        setQueue(newQueue)
+    }
+
+    //add song to queue
+    function addSong(track){
+        // console.log(track, playlist.playlist.playlistId)
+        s.setAccessToken(`${user.access}`)
+        s.addTracksToPlaylist(playlist.playlist.playlistId, [track.uri], function(err, obj){
+            if(err){
+                console.log(err)
+            }else{
+                getQueue(playlist)
+            }
+        })
+    }
+
+    //delete song from queue
+    function removeSong(track){
+        s.setAccessToken(`${user.access}`)
+        s.removeTracksFromPlaylist(playlist.playlist.playlistId, [track.track.uri], function(err, obj){
+            if(err){
+                console.log(err)
+            }else{
+                getQueue(playlist)
+            }
+        })
+    }
+
     //find available devices
     function getDevices(){
         s.setAccessToken(`${user.access}`)
@@ -106,54 +150,27 @@ export default function Playground(){
         setResults(currentTrack)
     }
 
-    //get queue
-    function getQueue(playlist){
-        if(playlist === null){
-            console.log('no songs added yet')
-        }else{
-        var newPlaylist = playlist.playlist.playlistId
-        s.setAccessToken(`${user.access}`)
-        s.getPlaylistTracks(newPlaylist)
-        .then(data=>{setQueue(data.items)})  
-        }
-    }
-    
-    //save queue to local storage
-    useEffect(()=>{
-        const data = localStorage.getItem('current-queue')
-        if(data){
-            setQueue(JSON.parse(data)) 
-        }
-    }, [])
-    
-    useEffect(()=>{
-        localStorage.setItem('current-queue', JSON.stringify(queue))
-    })
-    //end save queue to local storage 
-
-    //add song to queue
-    function liveQueue(track){
-        // console.log(track, playlist.playlist.playlistId)
-        s.setAccessToken(`${user.access}`)
-        s.addTracksToPlaylist(playlist.playlist.playlistId, [track.uri], function(err, obj){
-            if(err){
-                console.log(err)
-            }else{
-                console.log(obj)
-            }
-        })
-        
-    }
-        
-    //delete song from queue
+   function resetIframe() {
+       setRandom(random + 1);
+   }
+   
     
     return(
         <div className='outerContainer'>
+            <style jsx>{`
+      div {
+        color: #333;
+        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        font-size: 15px;
+      }
+    `}</style>
             <div className='header'>
                 <Player queue={queue}/>
-                <h1 className='userName'>{`Welcome, ${user.username}`}</h1>
+                <h1 className='userName'>{`Party Host: ${user.username}`}</h1>
                 <button onClick={()=>history.push("/logout")} size='small' className="dropbtn"> Logout </button>
             </div>   
+            <button onClick={resetIframe}>Reset</button>
+                <iframe key={random} src={`https://open.spotify.com/embed/playlist/${playlist.playlist.playlistId}`} width="300" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
             <div>
             <div className='newPlaylistForm'>   
                 {/* create playlist name */}
@@ -174,7 +191,7 @@ export default function Playground(){
                               {`${song.track.artists[0].name}-${song.track.name}`}
                             <img alt='album-cover' src={song.track.album.images[2].url}/>
                             <button onClick={()=>{
-                                console.log('hi')}
+                                removeSong(song)}
                                 // removeFromQueue(song)}
                                 } size='mini' className='ui icon inverted green button'>
                                     <i className='close icon'></i>
@@ -205,7 +222,7 @@ export default function Playground(){
                 <div>
             
                         {results.map(result =>
-                            <div className='results' onClick={()=>{liveQueue(result)}}>
+                            <div className='results' onClick={()=>{addSong(result)}}>
                                 {`${result.artists[0].name}-${result.name}`}
                                 <img alt='album-cover' src={result.album.images[2].url}/>
                             </div>
