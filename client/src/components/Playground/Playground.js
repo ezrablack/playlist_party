@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react'
 // import { Button} from 'semantic-ui-react'
-// import { useHistory } from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
+import Player from './Player'
 import './Playground.css'
 
 const Spotify = require('spotify-web-api-js')
 const s = new Spotify()
 
 export default function Playground(){
-    const [user, setUser] = useState('')
+    const [user, setUser] = useState([])
     const [results, setResults] = useState([])
     const [devices, setDevices] = useState([])
     const [playlistOptions , setOptions] = useState([])
@@ -15,14 +16,14 @@ export default function Playground(){
     const [queue, setQueue] = useState([])
     // const [currentSong, setSong] = useState([])
     // const [currentPlayback, setPlayback] = useState('')
-    // const history = useHistory()
+    const history = useHistory()
     
     //call to spotifyRouter to get user data    
-    useEffect(()=>{
+    useEffect(()=>{ 
         fetch('http://localhost:5010/', { credentials: 'include'})
         .then(res=>res.json())
         .then(data=>{setUser(data)})
-    }, []) 
+    }, [user.username]) 
 
     //get previous playlist to browse
     useEffect(()=>{
@@ -61,7 +62,8 @@ export default function Playground(){
         localStorage.setItem('my-playlist', JSON.stringify(playlist))
         var chosenPlaylist = JSON.parse(localStorage.getItem('my-playlist')) 
         setPlaylist(chosenPlaylist)
-        window.location.reload()    
+        getQueue(chosenPlaylist)
+        // window.location.reload()    
     }
     
     //find available devices
@@ -105,12 +107,15 @@ export default function Playground(){
     }
 
     //get queue
-    function getQueue(){
+    function getQueue(playlist){
+        if(playlist === null){
+            console.log('no songs added yet')
+        }else{
         var newPlaylist = playlist.playlist.playlistId
         s.setAccessToken(`${user.access}`)
         s.getPlaylistTracks(newPlaylist)
-        .then(data=>{console.log(data.items)})  
-        console.log(queue)
+        .then(data=>{setQueue(data.items)})  
+        }
     }
     
     //save queue to local storage
@@ -141,14 +146,13 @@ export default function Playground(){
     }
         
     //delete song from queue
-    console.log(playlist)
     
     return(
         <div className='outerContainer'>
             <div className='header'>
-                
+                <Player queue={queue}/>
                 <h1 className='userName'>{`Welcome, ${user.username}`}</h1>
-                <button href="/logout" size='small' className="dropbtn"> Logout </button>
+                <button onClick={()=>history.push("/logout")} size='small' className="dropbtn"> Logout </button>
             </div>   
             <div>
             <div className='newPlaylistForm'>   
@@ -164,11 +168,11 @@ export default function Playground(){
                 {/* filter through songs in queue */}
                 <div className="ui right floated secondary vertical pointing menu">
                     <ul>
-                        <h1 onClick={getQueue}>queue</h1>
+                        <h1>queue</h1>
                         {queue.map(song =>
-                          <li className='item'>
+                          <li key={song.track.id} className='item'>
                               {`${song.track.artists[0].name}-${song.track.name}`}
-                            <img alt='album-cover' src={song.album[2].url}/>
+                            <img alt='album-cover' src={song.track.album.images[2].url}/>
                             <button onClick={()=>{
                                 console.log('hi')}
                                 // removeFromQueue(song)}
