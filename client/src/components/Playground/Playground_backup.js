@@ -11,16 +11,6 @@
     // }) 
     //end save playlist to local storage 
 
-       //auto-load previous playlist, set first one to current playlist
-    // useEffect(()=>{
-    //     fetch('http://localhost:5010/playlists',{
-    //         method: "GET",
-    //     })
-    //     .then(res=>res.json())
-    //     .then(data=>{localStorage.setItem('my-playlist', JSON.stringify(data[0]))})
-    // }, [playlist])
-
-
 
 
 <div>
