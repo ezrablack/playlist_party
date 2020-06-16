@@ -1,14 +1,65 @@
 'use strict'
 
-const chat = require('./chat_server/chat')
-const chatRouter = require('./chat_server/chatDomain')
-const spotify = require('./spotify_server/spotify')
-const spotifyRouter = require('./spotify_server/spotifyDomain')
+const spotifyRouter = require('./spotify_server/routes/router')
+const express = require('express');
+const cors = require('cors');
+require('./spotify_server/config/spotify_auth')
+const passport = require('passport')
+const mongoose = require('mongoose')
+const keys = require('./spotify_server/config/keys')
+const app = express();
+const cookieSession = require('cookie-session')
+const http = require('http').createServer(app)
+const io = require('socket.io')(http)
 
-chat.listen(chatRouter.port, () => {
-    console.log(`listening on ${chatRouter.port}`)
+const authCheck = (req,res,next) => {
+    if(!req.user){
+        res.redirect('/homepage')
+    }else{
+        next()
+    }
+}
+
+app.get('/playground', authCheck, (req,res) =>{
+    res.send(req.session.user)
 })
 
-spotify.listen(spotifyRouter.port, () => {
-    console.log(`listening on ${spotifyRouter.port}`)
+//setup and encrypt session cookie
+app.use(cookieSession({
+    maxAge: 24 * 60 * 60 * 1000,
+    keys: [keys.session.cookieKey]
+}))
+
+//passport initialization
+app.use(passport.initialize())
+app.use(passport.session())
+
+//connect to mongodb
+mongoose.connect(keys.mongodb.dbURI, {useNewUrlParser: true, useUnifiedTopology: true,}, () => {
+    // console.log('connected to mongodb')
+})
+
+//spotify API router
+app.use(cors({ origin: 'http://localhost:3000', credentials: true }))
+
+//set up router
+app.use('/', spotifyRouter)
+
+//home route
+app.get('/', (req, res) => {
+    res.send('hello world')
+})
+
+io.on('connection', (socket)=>{
+    socket.on('delete', (track)=>{
+        io.emit('delete', (track))
+    })
+
+    socket.on('add', (track)=>{
+        io.emit('add', (track))
+    })
+})
+
+http.listen(5010, () => {
+    console.log(`listening on ${5010}`)
 })
