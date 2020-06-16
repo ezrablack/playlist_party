@@ -9,7 +9,7 @@ const Homepage = () => {
     }
 
     return(
-        <body className='outerContainer'>
+        <body className='homeOuterContainer'>
             <div >
                  <button className='loginButton' onClick={handleClick}>Join The Party</button>
             </div>

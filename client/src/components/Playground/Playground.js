@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react'
+import SpotifyPlayer from 'react-spotify-web-playback';
 // import { Button} from 'semantic-ui-react'
 import { useHistory } from 'react-router-dom'
-import Player from './Player'
+// import Player from './Player'
 import './Playground.css'
 
 const Spotify = require('spotify-web-api-js')
 const s = new Spotify()
-
+  
 export default function Playground(){
     const [user, setUser] = useState([])
     const [results, setResults] = useState([])
@@ -15,10 +16,11 @@ export default function Playground(){
     const [playlist, setPlaylist] = useState(JSON.parse(localStorage.getItem('my-playlist')) || null)
     const [queue, setQueue] = useState(JSON.parse(localStorage.getItem('queue')) || [])
     const [random, setRandom ] = useState(0)
+    const [queueURI, setQueueURI] = useState([])
+
     // const [currentSong, setSong] = useState([])
-    // const [currentPlayback, setPlayback] = useState('')
     const history = useHistory()
-    
+
     //call to spotifyRouter to get user data    
     useEffect(()=>{ 
         fetch('http://localhost:5010/', { credentials: 'include'})
@@ -150,28 +152,37 @@ export default function Playground(){
         setResults(currentTrack)
     }
 
+    //spotify iframe refresh test
    function resetIframe() {
        setRandom(random + 1);
    }
+
+   //send spotify hrefs to player - in progress
+   useEffect(()=>{
+    var trackUris = []
+    queue.map(song=>trackUris.push(song.track.uri))
+    console.log(trackUris)
+    setQueueURI(trackUris)
+   }, [])
    
-    
+
     return(
+       <body className='playOuterContainer'>
         <div className='outerContainer'>
-            <style jsx>{`
-      div {
-        color: #333;
-        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-        font-size: 15px;
-      }
-    `}</style>
             <div className='header'>
-                <Player queue={queue}/>
-                <h1 className='userName'>{`Party Host: ${user.username}`}</h1>
-                <button onClick={()=>history.push("/logout")} size='small' className="dropbtn"> Logout </button>
+                {/* <Player queue={queue}/> -- player built by Daniel Stansberry */}
+                
+                <button className='logoutBtn' onClick={()=>history.push("/logout")} size='small' className="dropbtn"> Logout </button>
             </div>   
-            <button onClick={resetIframe}>Reset</button>
-                <iframe key={random} src={`https://open.spotify.com/embed/playlist/${playlist.playlist.playlistId}`} width="300" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
-            <div>
+            <div className='currentlyOnline'>
+                <h5> online: </h5>
+                {user.map()}
+
+            </div>
+            {/* <button onClick={resetIframe}>Reset</button> */}
+                {/* Spotify playback button - playlist
+                <iframe key={random} src={`https://open.spotify.com/embed/playlist/${playlist.playlist.playlistId}`} width="300" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe> */}
+            
             <div className='newPlaylistForm'>   
                 {/* create playlist name */}
                 <form onSubmit={(e)=>createPlaylist(e)}>
@@ -192,7 +203,6 @@ export default function Playground(){
                             <img alt='album-cover' src={song.track.album.images[2].url}/>
                             <button onClick={()=>{
                                 removeSong(song)}
-                                // removeFromQueue(song)}
                                 } size='mini' className='ui icon inverted green button'>
                                     <i className='close icon'></i>
                             </button>
@@ -229,21 +239,37 @@ export default function Playground(){
                         )}                 
                     
                 </div>
-                {/* get devices */}
-                <div className="dropdown">
+                {/* get devices - may not need with spotify player*/}
+                {/* <div className="dropdown">
                     <button className="dropbtn" onClick={getDevices}>Find Devices</button>
                     <div className="dropdown-content">
                         {devices.map(device =>
                             <h5 className='item' onClick={()=>setDevice(device.id)}>{device.name}</h5>
                         )}                  
                     </div>
+                </div> */}
+                <div className="spotifyPlayer">
+                    {console.log(queueURI)}
+                <SpotifyPlayer 
+                    token={user.access}
+                    uris = {queueURI}
+                    name = 'Playlist Party'
+                    persistDeviceSelection = 'true'
+                    syncExternalDeviceInterval = '5'
+                    magnifySliderOnHover = 'true'
+                    styles={{
+                        bgColor: '#333',
+                        color: '#fff',
+                        loaderColor: '#fff',
+                        sliderColor: '#1cb954',
+                        savedColor: '#fff',
+                        trackArtistColor: '#ccc',
+                        trackNameColor: '#fff',
+                      }}
+                />
                 </div>
-
-
-
-
-                            </div>
         </div>
+        </body> 
     )
 }
 

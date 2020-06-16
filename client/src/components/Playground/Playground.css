@@ -1,5 +1,40 @@
+.playOuterContainer {
+    display: flex;
+    text-align: center;
+    width: 100vw;
+    height: 100vh;
+    align-items: center;
+    background-color: #191414;
+  }
 
+.outerContainer{
+    display: flex;
+    text-align: center;
+    width: 100vw;
+    height: 100vh;
+    align-items: center;
+    background-color: #191414;
+}
 
+.header{
+    position: absolute;
+    width: 100vw;
+    margin-top: -25%;
+}
 
+.logoutBtn{
+    position: ;
+    margin-left: -4%;
+}
 
+.userName{
+    position: absolute;
+    left: 3%;
+    top: 5%;
+}
 
+.spotifyPlayer{
+    position: absolute;
+    width: 100vw;
+    top: 93%;
+}

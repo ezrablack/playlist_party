@@ -1,25 +1,23 @@
-/* .homeOuterContainer {
+.homeOuterContainer {
     display: flex;
     text-align: center;
     height: 100vh;
     align-items: center;
-    background-color: #1A1A1D;
-  } */
-
+    background-color: #191414;
+  }
 /* 
 .outerContainer {
   background-color: #1A1A1D;
   position: relative;
-}
+} */
 
  .loginButton{
     background-color: #191414;
-   
     position: absolute;
-    left: 22%;
-    margin-left: -70px;
-    top: 35%;
-    margin-top: 70px;
+    left: 50%;
+    margin-left: -55px;
+    top: 50%;
+    margin-top: -50px;
     display: block;
     color: #f2f2f2;
     text-align: center;
@@ -34,4 +32,4 @@
 .loginButton:hover {
   background-color: #1DB954; 
   color: white;
-}  */
+}  
