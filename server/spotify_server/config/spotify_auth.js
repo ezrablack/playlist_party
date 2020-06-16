@@ -12,7 +12,7 @@ passport.use(
             clientSecret: keys.spotify.client_secret,
             callbackURL: keys.spotify.redirect_uri
         },
-         ( accessToken, refreshToken, profile, done ) => {
+         ( accessToken, refreshToken, expires_in, profile, done ) => {
             
             //check if user exists
             User.findOne({ spotifyId: profile.id }).then((currentUser)=>{

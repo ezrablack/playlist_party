@@ -1,40 +1,41 @@
+* html,body{overflow-x: hidden;}
+
 .playOuterContainer {
     display: flex;
-    text-align: center;
     width: 100vw;
     height: 100vh;
-    align-items: center;
-    background-color: #191414;
-  }
-
-.outerContainer{
-    display: flex;
-    text-align: center;
-    width: 100vw;
-    height: 100vh;
-    align-items: center;
     background-color: #191414;
 }
 
-.header{
-    position: absolute;
-    width: 100vw;
-    margin-top: -25%;
+.column{
+    width: 33.33%;
+    border: 2px solid #1DB954;
+    border-radius: 8px;
 }
 
 .logoutBtn{
-    position: ;
-    margin-left: -4%;
+    background-color: #191414;
+    position: absolute;
+    margin-left: 27%;
+    top: 1%;
+    color: #f2f2f2;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    transition-duration: 0.4s;
+    border: 2px solid #1DB954;
+    border-radius: 8px;
+    cursor: pointer; 
 }
 
-.userName{
-    position: absolute;
-    left: 3%;
-    top: 5%;
-}
+.logoutBtn:hover {
+    background-color: #1DB954; 
+    color: white;
+  }  
+
 
 .spotifyPlayer{
     position: absolute;
     width: 100vw;
-    top: 93%;
+    top: 93.7%;
 }
