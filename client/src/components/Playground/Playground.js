@@ -179,11 +179,20 @@ export default function Playground() {
         setResults(currentTrack)
     }
 
+    function showPlaylists() {
+        document.getElementById("myDropdown").classList.toggle("show");
+      }
+      
+
+
+
+
+
+
     if(user === null){
         return "Loading"
     }
     return (
-    
         <div className='playOuterContainer'>
 
             {/* column 1 */}
@@ -194,30 +203,25 @@ export default function Playground() {
             {/* column 2 */}
             <div className='column'>
                 {(playlist !== null) ? <h1 style={{ float: 'left' }}>Current Playlist: {playlist.playlist.title}</h1> : <h1>Create Playlist</h1>}
-            </div>
-
-            {/* column 3 */}
-            <div className='column'>
                 <button className='logoutBtn' onClick={() => history.push("/logout")}> Logout </button>
+                {/* previous playlists */}
                 <div className="dropdown">
-                    <button className="dropbtn">Previous Playlists</button>
+                    <button className="dropbtn" onClick={showPlaylists}>Previous Playlists</button>
                     <div className="dropdown-content">
                         {playlistOptions.map(playlist =>
-                            <h5 key={playlist.playlist.playlistId} onClick={() => { choosePlaylist(playlist) }}>{playlist.playlist.title}</h5>
+                            <button key={playlist.playlist.playlistId} onClick={() => { choosePlaylist(playlist) }}>{playlist.playlist.title}</button>
                         )}
                     </div>
                 </div>
-            </div>
-
-            {/* create playlist name */}
-            {/* <form onSubmit={(e)=>createPlaylist(e)}>
+                             {/* create playlist name */}
+            <form onSubmit={(e)=>createPlaylist(e)}>
                     <div >
                       <label>Playlist Name</label>
                       <input type="text" name="name" placeholder="The Final Countdown..." required></input>
                     </div>
-                    <button className="dropbtn" type="submit">Submit</button>
-                </form> */}
-
+                    <button type="submit">Submit</button>
+                </form>
+            
             {/* filter through songs in queue */}
             <div className="ui right floated secondary vertical pointing menu">
                 <ul>
@@ -271,7 +275,11 @@ export default function Playground() {
                     </div>
                 </div>
 
-
+            
+            
+            
+            
+            </div>
         </div>
     )
 }
