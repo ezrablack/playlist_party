@@ -5,6 +5,7 @@ import { useHistory } from 'react-router-dom'
 import socketio from 'socket.io-client'
 import Chat from '../Chat/Chat'
 const socket = socketio('http://localhost:5010')
+const faker = require('faker')
 
 
 const Spotify = require('spotify-web-api-js')
@@ -12,6 +13,8 @@ const s = new Spotify()
 
 export default function Playground() {
     const [user, setUser] = useState(null)
+    const [name, setName] = useState(faker.name.firstName());
+    const [room, setRoom] = useState('Playlist Party')
     const [results, setResults] = useState([])
     const [devices, setDevices] = useState([])
     const [playlistOptions, setOptions] = useState([])
@@ -53,7 +56,7 @@ export default function Playground() {
         })
             .then(res => res.json())
             .then(data => { setOptions(data) })
-    }, [playlistOptions.length])
+    }, [playlistOptions.length]) 
 
     //user creates collab playlist and sends link to friends. this prevents need for DB and can set playback
     function createPlaylist(e) {
@@ -206,7 +209,7 @@ export default function Playground() {
       function closeForm() {
         document.getElementById("myForm").style.display = "none";
       }
-
+ 
     if(user === null){
         return "Loading"
     }
@@ -214,9 +217,7 @@ export default function Playground() {
         <div className='playOuterContainer'>
             {/* column 1 - chat components */}
             <div className='column'>
-                <h5 className='userContainer'> online: </h5>
-                <h6 className='userBox' style={{color: 'white'}}>{user.username}</h6>
-                <Chat name={user.username}/>
+                <Chat name={name} room={room}/>
             </div>
             {/* column 2 - spotify components */}
             <div className='column'>
@@ -263,7 +264,7 @@ export default function Playground() {
             {/* new playlist form */}
                 <div className='form-popup' id='myForm'>
                     <form onSubmit={(e)=>createPlaylist(e)} class='form-container'>
-                        <label for='playlistName'>Playlist Name</label>
+                        <label form='playlistName'>Playlist Name</label>
                         <input type="text" name="playlistName" placeholder="The Final Countdown..." required></input>
                         <button type="submit" class='submitBtn'>Submit</button>
                         <button type="submit" class='cancelBtn' onClick={closeForm}>Cancel</button>

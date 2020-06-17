@@ -19,10 +19,16 @@ spotifyRouter.get('/spotify', passport.authenticate('spotify', {
 }))
 
 //callback route for Spotify to redirect to localhost:5010/callback
-spotifyRouter.get('/callback', passport.authenticate('spotify', { failureRedirect: '/login'}),
+spotifyRouter.get('/callback', passport.authenticate('spotify', { failureRedirect: '/'}),
     (req, res) => {
         res.redirect('http://localhost:3000/playground')
 })
+
+spotifyRouter.get('/playground', passport.authenticate('spotify', { failureRedirect: '/'}),
+    (req, res)=>{
+        res.redirect('http://localhost:3000/playground')
+    }
+)
 
 //user post to queue
 spotifyRouter.post('/newPlaylist', (req, res) =>{

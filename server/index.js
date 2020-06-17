@@ -12,6 +12,8 @@ const cookieSession = require('cookie-session')
 const http = require('http').createServer(app)
 const io = require('socket.io')(http)
 
+const { addUser, removeUser, getUser, getUsersInRoom } = require('./users');
+
 const authCheck = (req,res,next) => {
     if(!req.user){
         res.redirect('/homepage')
@@ -50,7 +52,25 @@ app.get('/', (req, res) => {
     res.send('hello world')
 })
 
+//socket.io used for chat and queue updates
 io.on('connection', (socket)=>{
+    console.log('we have connection')
+    socket.on('join', ({ name, room }, callback) => {
+        const { error, user } = addUser({ id: socket.id, name, room });
+        
+        if(error) return callback(error);
+        
+        console.log(user.room)
+        socket.join(user.room);
+    
+        socket.emit('message', { user: 'admin', text: `Hey ${user.name}! Welcome to ${user.room}.`});
+        socket.broadcast.to(user.room).emit('message', { user: 'admin', text: `${user.name} has joined!` });
+    
+        io.to(user.room).emit('roomData', { room: user.room, users: getUsersInRoom(user.room) });
+    
+        callback();
+    })    
+
     socket.on('delete', (track)=>{
         io.emit('delete', (track))
     })
@@ -61,6 +81,23 @@ io.on('connection', (socket)=>{
 
     socket.on('disconnect', ()=>{
         console.log('user has left!')
+    })
+
+    socket.on('sendMessage', (message, callback) => {
+        const user = getUser(socket.id);
+    
+        io.to(user.room).emit('message', { user: user.name, text: message });
+    
+        callback();
+    });
+    
+    socket.on('disconnect', () => {
+      const user = removeUser(socket.id);
+
+      if(user) {
+        io.to(user.room).emit('message', { user: 'Admin', text: `${user.name} has left.` });
+        io.to(user.room).emit('roomData', { room: user.room, users: getUsersInRoom(user.room)});
+      }
     })
 })
 
