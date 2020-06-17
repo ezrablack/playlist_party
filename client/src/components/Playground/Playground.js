@@ -3,6 +3,7 @@ import './Playground.css'
 import React, { useState, useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
 import socketio from 'socket.io-client'
+import Chat from '../Chat/Chat'
 const socket = socketio('http://localhost:5010')
 
 
@@ -56,8 +57,9 @@ export default function Playground() {
 
     //user creates collab playlist and sends link to friends. this prevents need for DB and can set playback
     function createPlaylist(e) {
+        closeForm()
         e.preventDefault()
-        var playlistName = e.target.elements.name.value
+        var playlistName = e.target.elements.playlistName.value
         var userId = user.spotifyId
         s.setAccessToken(`${user.access}`)
         s.createPlaylist(userId, { name: playlistName, public: false, collaborative: true })
@@ -123,10 +125,12 @@ export default function Playground() {
             }
         })}
     }
-
+   
     //play song from queue
     async function playSong(track){
-        console.log(track)
+        if(devices === null){
+            alert('Please choose a device first')
+        }else{
         var song = {uris: [track.track.uri]}
         s.setAccessToken(`${user.access}`)
         await s.play(song, function(err, obj){
@@ -136,7 +140,7 @@ export default function Playground() {
                 console.log(obj)
             }
         })
-
+    }
     }
 
     //delete song from queue
@@ -211,11 +215,12 @@ export default function Playground() {
             {/* column 1 - chat components */}
             <div className='column'>
                 <h5 className='userContainer'> online: </h5>
-                <h6 className='userBox'>{user.username}</h6>
+                <h6 className='userBox' style={{color: 'white'}}>{user.username}</h6>
+                <Chat name={user.username}/>
             </div>
             {/* column 2 - spotify components */}
             <div className='column'>
-                {(playlist !== null) ? <h1 style={{ float: 'left' }}>Current Playlist: {playlist.playlist.title}</h1> : <h1>Create Playlist</h1>}
+                {(playlist !== null) ? <h1 style={{ float: 'left', color: 'white' }} >Current Playlist: {playlist.playlist.title}</h1> : <h1>Create Playlist</h1>}
                 <button className='logoutBtn' onClick={() => history.push("/logout")}> Logout </button>
             {/* previous playlists */}
                 <div class='dropdown'>   
@@ -229,11 +234,11 @@ export default function Playground() {
             {/* get devices */}
                 <div className="deviceDropdown">
                     <button className="deviceDropbtn" onMouseOver={getDevices}>Find Devices</button>
-                    <div className="deviceDropdown-content">
                         {devices.map(device =>
+                    <div className="deviceDropdown-content">
                             <h4 onClick={()=>setDevice(device.id)}>{device.name}</h4>
-                        )}                  
                     </div>
+                        )}                  
                 </div> 
             {/* button to create playlist form */}
                 <button onClick={openForm} className='open-button'>New Playlist</button>

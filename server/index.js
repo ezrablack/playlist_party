@@ -58,6 +58,10 @@ io.on('connection', (socket)=>{
     socket.on('add', (track)=>{
         io.emit('add', (track))
     })
+
+    socket.on('disconnect', ()=>{
+        console.log('user has left!')
+    })
 })
 
 http.listen(5010, () => {
