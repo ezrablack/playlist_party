@@ -101,7 +101,6 @@ export default function Playground() {
         }
     }
 
-
     //sets current songs to local storage for rendering
     function liveQueue(tracks) {
         localStorage.setItem('queue', JSON.stringify(tracks))
@@ -125,6 +124,21 @@ export default function Playground() {
         })}
     }
 
+    //play song from queue
+    async function playSong(track){
+        console.log(track)
+        var song = {uris: [track.track.uri]}
+        s.setAccessToken(`${user.access}`)
+        await s.play(song, function(err, obj){
+            if(err){
+                console.log(err)
+            }else{
+                console.log(obj)
+            }
+        })
+
+    }
+
     //delete song from queue
     function removeSong(track) {
         socket.emit('delete', playlist)
@@ -138,9 +152,11 @@ export default function Playground() {
         })
     }
 
-   
     //find available devices
     function getDevices() {
+        if(user === null){
+            console.log('no user')
+        }else{
         s.setAccessToken(`${user.access}`)
         s.getMyDevices().then(
             function (data) {
@@ -149,15 +165,14 @@ export default function Playground() {
                 d.map(device => devs.push(device))
                 setDevices(devs)
             }
-        )
+        )}
     }
-
+   
     //set chosen device
     function setDevice(device) {
         var chosenDevice = []
         chosenDevice.push(device)
         chosenDevice.join("")
-        console.log(chosenDevice)
         s.setAccessToken(`${user.access}`)
         s.transferMyPlayback(chosenDevice)
         setDevices([])
@@ -179,108 +194,94 @@ export default function Playground() {
         setResults(currentTrack)
     }
 
-    function showPlaylists() {
-        document.getElementById("myDropdown").classList.toggle("show");
+    //pop up form for new playlist
+    function openForm() {
+        document.getElementById("myForm").style.display = "block";
       }
       
-
-
-
-
-
+      function closeForm() {
+        document.getElementById("myForm").style.display = "none";
+      }
 
     if(user === null){
         return "Loading"
     }
     return (
         <div className='playOuterContainer'>
-
-            {/* column 1 */}
+            {/* column 1 - chat components */}
             <div className='column'>
                 <h5 className='userContainer'> online: </h5>
                 <h6 className='userBox'>{user.username}</h6>
             </div>
-            {/* column 2 */}
+            {/* column 2 - spotify components */}
             <div className='column'>
                 {(playlist !== null) ? <h1 style={{ float: 'left' }}>Current Playlist: {playlist.playlist.title}</h1> : <h1>Create Playlist</h1>}
                 <button className='logoutBtn' onClick={() => history.push("/logout")}> Logout </button>
-                {/* previous playlists */}
-                <div className="dropdown">
-                    <button className="dropbtn" onClick={showPlaylists}>Previous Playlists</button>
-                    <div className="dropdown-content">
+            {/* previous playlists */}
+                <div class='dropdown'>   
+                    <button className="dropbtn" >Previous Lists</button>
+                    <div id='myDropdown' className="dropdown-content">
                         {playlistOptions.map(playlist =>
-                            <button key={playlist.playlist.playlistId} onClick={() => { choosePlaylist(playlist) }}>{playlist.playlist.title}</button>
+                            <h4 key={playlist.playlist.playlistId} onClick={() => { choosePlaylist(playlist) }}>{playlist.playlist.title}</h4>
                         )}
                     </div>
                 </div>
-                             {/* create playlist name */}
-            <form onSubmit={(e)=>createPlaylist(e)}>
-                    <div >
-                      <label>Playlist Name</label>
-                      <input type="text" name="name" placeholder="The Final Countdown..." required></input>
-                    </div>
-                    <button type="submit">Submit</button>
-                </form>
-            
-            {/* filter through songs in queue */}
-            <div className="ui right floated secondary vertical pointing menu">
-                <ul>
-                    <h1>queue</h1>
-                    {console.log(queue)}
-                    {queue.map(song =>
-                        <li key={song.added_at} className='item'>
-                            {`${song.track.artists[0].name}-${song.track.name}`}
-                            <img alt='album-cover' src={song.track.album.images[2].url} />
-                            <button onClick={() => {
-                                removeSong(song)
-                            }
-                            } size='mini' className='ui icon inverted green button'>
-                                <i className='close icon'></i>
-                            </button>
-                        </li>
-                    )}
-                </ul>
-            </div>
-            {/* previous playlists stored on mongoDb */}
-
-            {/* current playlist */}
-
-            {/* song search bar */}
-
-            <input className="prompt" onChange={(e) => { searchSongs(e) }} type="text" placeholder="Search for songs..." />
-            {results.map(result =>
-                <div className='results' onClick={() => { addSong(result) }}>
-                    {`${result.artists[0].name}-${result.name}`}
-                    <img alt='album-cover' src={result.album.images[2].url} />
-                </div>
-            )}
-
-            {/* song search results */}
-            <div>
-                {results.map(result =>
-                    <div className='results' onClick={() => { addSong(result) }}>
-                        {`${result.artists[0].name}-${result.name}`}
-                        <img alt='album-cover' src={result.album.images[2].url} />
-                    </div>
-                )}
-            </div>
-
-            {/* get devices - may not need with spotify player*/}
-            <div className="dropdown">
-                    <button className="dropbtn" onClick={getDevices}>Find Devices</button>
-                    <div className="dropdown-content">
+            {/* get devices */}
+                <div className="deviceDropdown">
+                    <button className="deviceDropbtn" onMouseOver={getDevices}>Find Devices</button>
+                    <div className="deviceDropdown-content">
                         {devices.map(device =>
-                            <h5 className='item' onClick={()=>setDevice(device.id)}>{device.name}</h5>
+                            <h4 onClick={()=>setDevice(device.id)}>{device.name}</h4>
                         )}                  
                     </div>
+                </div> 
+            {/* button to create playlist form */}
+                <button onClick={openForm} className='open-button'>New Playlist</button>
+            {/* song search bar */}
+                <div className='searchInput'>       
+                <input className="prompt" onChange={(e) => { searchSongs(e) }} type="text" placeholder="Search for songs..." />
                 </div>
-
-            
-            
-            
-            
-            </div>
+                {(results === [] ? 
+                    <div className='empty'></div>
+                :   
+                <div className='search-menu'>
+            {/* song search results */}
+                    {results.map(result =>
+                    <div className='resultCard'>
+                        <h5 className='result' onClick={() => { addSong(result) }}>{`${result.artists[0].name}-${result.name}`}
+                        <img  className='resultImage' alt='album-cover' src={result.album.images[2].url} />
+                        </h5>
+                    </div>    
+                    )}
+                </div>
+                )}
+            {/* new playlist form */}
+                <div className='form-popup' id='myForm'>
+                    <form onSubmit={(e)=>createPlaylist(e)} class='form-container'>
+                        <label for='playlistName'>Playlist Name</label>
+                        <input type="text" name="playlistName" placeholder="The Final Countdown..." required></input>
+                        <button type="submit" class='submitBtn'>Submit</button>
+                        <button type="submit" class='cancelBtn' onClick={closeForm}>Cancel</button>
+                    </form>
+                </div>
+            {/* Current Queue */}
+                <div className="vertical-menu"> 
+                    {queue.map(song =>
+                    <div className='songCard'>
+                        <h5 key={song.added_at} className='queueItem'>{`${song.track.artists[0].name}-${song.track.name}`}
+                        <img className='songImage' alt='album-cover' src={song.track.album.images[2].url}></img>
+                        <button onClick={() => {removeSong(song)}} size='mini' className='ui right floated icon inverted green button'>
+                        <i className='close icon'></i>
+                        </button>  
+                        <button onClick={()=>{playSong(song)}}size='mini' className='ui right floated icon inverted green button'>
+                        <i className='play icon'></i>
+                        </button>
+                        </h5>
+                    </div>    
+                    )}
+                </div>
         </div>
+    </div>
     )
 }
 
