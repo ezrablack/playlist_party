@@ -6,18 +6,19 @@
     height: 100vh;
     background-color: #191414;
 }
-
+/* columns for chat and spotify containers */
 .column{
     width: 50%;
     border: 2px solid #1DB954;
     border-radius: 8px;
 }
 
+/* logout button */
 .logoutBtn{
     background-color: #191414;
-    position: absolute;
-    margin-left: 23.5%;
-    top: 0.5%;
+    position: fixed;
+    margin-left: 23.3%;
+    top: 1%;
     color: #f2f2f2;
     text-align: center;
     padding: 14px 16px;
@@ -31,14 +32,182 @@
 .logoutBtn:hover {
     background-color: #1DB954; 
     color: white;
-  }  
+}  
 
+/* playlist dropdown button */
 /* Dropdown Button */
 .dropbtn {
     background-color: #191414;
-    position: absolute;
-    margin-left: 19.5%;
-    top: 0.5%;
+    margin-left: 29%;
+    margin-top: -4.5%;
+    color: #f2f2f2;
+    text-align: center;
+    padding: 6px 16px;
+    text-decoration: none;
+    transition-duration: 0.4s;
+    border: 2px solid #1DB954;
+    border-radius: 8px;
+    cursor: pointer; 
+}
+
+/* Dropdown button on hover & focus */
+.dropbtn:hover, .dropbtn:focus {
+  background-color: #1DB954; 
+  color: white;
+}
+
+/* The container <div> - needed to position the dropdown content */
+.dropdown {
+  margin-left: 13.5%;
+  margin-top: 0.2%;  
+  padding: 8px 10px;
+  position: fixed;
+  display: inline-block;
+}
+
+/* Dropdown Content (Hidden by Default) */
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #191414;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+/* Links inside the dropdown */
+.dropdown-content h4 {
+  color: #f2f2f2;
+  padding: 6px 16px;
+  text-decoration: none;
+  display: block;
+  border: 2px solid #1DB954;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.dropdown-content h4:hover {background-color: #1DB954}
+
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+.dropdown:hover .dropbtn {
+  background-color: #3e8e41;
+}
+
+/* devices dropdown button */
+/* Dropdown Button */
+.deviceDropbtn {
+    background-color: #191414;
+    margin-left: 20%;
+    color: #f2f2f2;
+    text-align: center;
+    padding: 6px 14px;
+    text-decoration: none;
+    transition-duration: 0.4s;
+    border: 2px solid #1DB954;
+    border-radius: 8px;
+    cursor: pointer; 
+}
+
+/* Dropdown button on hover & focus */
+.deviceDropbtn:hover, .deviceDropbtn:focus {
+  background-color: #1DB954; 
+  color: white;
+}
+
+/* The container <div> - needed to position the dropdown content */
+.deviceDropdown {
+    margin-left: 7.8%;
+    margin-top: -0.23%;  
+    padding: 8px 10px;
+    position: fixed;
+    display: inline-block;
+}
+
+/* Dropdown Content (Hidden by Default) */
+.deviceDropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #191414;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+/* Links inside the dropdown */
+.deviceDropdown-content h4 {
+  color: #f2f2f2;
+  padding: 6px 16px;
+  text-decoration: none;
+  display: block;
+  border: 2px solid #1DB954;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+/* Change color of dropdown links on hover */
+.deviceDropdown-content h4:hover {background-color: #1DB954}
+
+
+.deviceDropdown:hover .deviceDropdown-content {
+  display: block;
+}
+
+.deviceDropdown:hover .deviceDropbtn {
+  background-color: #3e8e41;
+}
+
+/* scroll bar for queue */
+.vertical-menu {
+    position: fixed;
+    margin-top: 30%;
+    width: 714px;
+    height: 237px;
+    overflow-y: auto;
+    border: 2px solid #1DB954;
+    border-radius: 8px;
+    cursor: pointer; 
+}
+
+.vertical-menu h5{
+    background-color: #191414;
+    color: white;
+    display: block;
+    width: 700px;
+    padding: 12px;
+    text-decoration: none;
+    overflow: auto;
+    text-align: center;
+}
+
+.vertical-menu img{
+    display: inline-block;
+}
+
+.vertical-menu h5:hover{
+    background-color: #1DB954;
+    width: 710px;
+}
+
+.songImage{
+    float: left;
+    padding-right: 3%;
+}
+
+.songCard{
+    overflow: auto;
+    display: inline-flex;
+}
+
+/* Button used to open the contact form - fixed at the bottom of the page */
+.open-button {
+    position: fixed;
+    background-color: #191414;
+    margin-left: 2%;
+    margin-top: 0.4%;
     color: #f2f2f2;
     text-align: center;
     padding: 14px 16px;
@@ -47,46 +216,120 @@
     border: 2px solid #1DB954;
     border-radius: 8px;
     cursor: pointer; 
-  }
-  
-  /* Dropdown button on hover & focus */
-  .dropbtn:hover, .dropbtn:focus {
-    background-color: #1DB954; 
-    color: white;
-  }
-  
-  /* The container <div> - needed to position the dropdown content */
-  .dropdown {
-    position: relative;
-    display: inline-block;
-  }
-  
-  /* Dropdown Content (Hidden by Default) */
-  .dropdown-content {
-    display: none;
-    position: absolute;
-    background-color: #f1f1f1;
-    min-width: 160px;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-    z-index: 1;
-  }
-  
-  /* Links inside the dropdown */
-  .dropdown-content a {
-    color: black;
-    padding: 12px 16px;
-    text-decoration: none;
-    display: block;
-  }
-  
-  /* Change color of dropdown links on hover */
-  .dropdown-content a:hover {background-color: #ddd}
-  
-  /* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
-  .show {display:block;}
+}
 
-.spotifyPlayer{
-    position: absolute;
-    width: 100vw;
-    top: 93.7%;
+/* The popup form - hidden by default */
+.form-popup {
+    display: none;
+    position: fixed;
+    bottom: 50%;
+    left: 40%;
+    border: 2px solid #1DB954;
+    border-radius: 8px;
+    cursor: pointer; 
+    z-index: 9;
+}
+
+/* Add styles to the form container */
+.form-container {
+    max-width: 300px;
+    padding: 10px;
+    background-color: #191414;
+    border-radius: 8px;
+    color: white
+}
+
+/* Full-width input fields */
+.form-container input[type=text], .form-container input[type=password] {
+  width: 100%;
+  padding: 15px;
+  margin: 5px 0 22px 0;
+  border: none;
+  border: 2px solid #1DB954;
+border-radius: 8px;
+  background: #f1f1f1;
+}
+
+/* When the inputs get focus, do something */
+.form-container input[type=text]:focus, .form-container input[type=password]:focus {
+  background-color: #ddd;
+  outline: none;
+}
+
+/* Set a style for the submit/cancel button */
+.form-container .btn {
+  background-color: #4CAF50;
+  color: white;
+  padding: 16px 20px;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  margin-bottom:10px;
+  opacity: 0.8;
+  border: 2px solid #1DB954;
+border-radius: 8px;
+}
+
+/* Add a red background color to the cancel button */
+.form-container .cancelBtn {
+  background-color: red;
+}
+
+/* Add some hover effects to buttons */
+.form-container .btn:hover, .open-button:hover {
+    background-color: #3e8e41;
+}
+
+/* search bar input */
+.searchInput{
+    margin-top: 10%;
+    margin-right: 30%;
+}
+
+.prompt{
+    background-color: #191414;
+    color: white;
+    border: 2px solid #1DB954;
+    border-radius: 8px;
+    cursor: pointer; 
+}
+
+/* scroll bar for queue */
+.search-menu {
+    position: fixed;
+    margin-top: 0%;
+    width: 714px;
+    height: 237px;
+    overflow-y: auto;
+    cursor: pointer; 
+}
+
+.search-menu h5{
+    background-color: #191414;
+    color: white;
+    display: block;
+    width: 690px;
+    padding: 12px;
+    text-decoration: none;
+    overflow: auto;
+    text-align: center;
+}
+
+.search-menu img{
+    display: inline-block;
+}
+
+.search-menu h5:hover{
+    background-color: #1DB954;
+    width: 700px;
+}
+
+.resultImage{
+    float: left;
+    padding-right: 3%;
+}
+
+.resultCard{
+    overflow: auto;
+    display: inline-flex;
 }
