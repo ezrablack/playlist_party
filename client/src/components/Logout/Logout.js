@@ -1,7 +1,7 @@
 import React from 'react'
 import { Button } from 'semantic-ui-react'
 import { useHistory } from 'react-router-dom'
-
+import './Logout.css'
 
 const Login = () => {
     const history = useHistory()
@@ -11,13 +11,11 @@ const Login = () => {
     }
     return(
         <body className='body'>
-            <div className='homeOuterContainer'>
-                <Button inverted color='green' size ='small' className="ui button"
+            <div className='logoutContainer'>
+                <Button id='button' inverted color='green' size ='small' className="ui button"
                 onClick={handleClick}
                 >Hop Back In!</Button>
-                <div className='logoutMessage'>
-                    <h1> Thanks For Coming To The Party! </h1>
-                </div>
+                <h1 className='logoutMessage'> Thanks For Coming To The Party! </h1>
             </div>
         </body>
     )
